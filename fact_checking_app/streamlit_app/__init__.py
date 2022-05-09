@@ -2,20 +2,20 @@ import os
 import streamlit as st
 import streamlit.components.v1 as components
 from transformers import DistilBertForSequenceClassification, DistilBertConfig, Trainer, DistilBertTokenizer
-import torch
 import requests
 import json
 import pandas as pd
 from spacy.lang.en import English
 import docx2txt
 
+from fact_checking_app.classes import CovidDataset
+
 nlpSpacy = English()
 nlpSpacy.add_pipe('sentencizer')
 nlpSpacy.Defaults.stop_words |= {"we", "a", "the", "this"}
 all_stopwords = nlpSpacy.Defaults.stop_words
 # set your Google API key here
-api_key=""
-
+api_key = ""
 
 # run npm run build in the frontend directory and set _RELEASE to true, if you do not plan to change the frontend component
 _RELEASE = False
@@ -42,27 +42,12 @@ else:
     _component_func = components.declare_component(
         "vue_component", path=build_dir)
 
+
 # Create a wrapper function for the component. This is an optional
 # best practice - we could simply expose the component function returned by
 # `declare_component` and call it done. The wrapper allows us to customize
 # our component's API: we can pre-process its input args, post-process its
 # output value, and add a docstring for users.
-
-
-# the custom dataset class
-class CovidDataset(torch.utils.data.Dataset):
-    def __init__(self, encodings, labels):
-        self.encodings = encodings
-        self.labels = labels
-
-    def __getitem__(self, idx):
-        item = {key: torch.tensor(val[idx])
-                for key, val in self.encodings.items()}
-        item['labels'] = torch.tensor(self.labels[idx])
-        return item
-
-    def __len__(self):
-        return len(self.labels)
 
 
 def vue_component(sentences, labels, key=None):
@@ -83,10 +68,10 @@ if docx_file is not None:
         # Parse in the uploadFile Class directory
         sentences = docx2txt.process(docx_file)
 
-data = [] # an array of text+label pairs, since we do not know the true labels of each sentence, we just set the labels to 0
+data = []  # an array of text+label pairs, since we do not know the true labels of each sentence, we just set the labels to 0
 
-finalSentences = [] # an array of the sentences, used later in the frontend component
-finalResults = [] # an array of the final results - 0 for regular sentences, for suspicious sentences - 1, if no relevant claims are found or an array of relevant claims, if there are any 
+finalSentences = []  # an array of the sentences, used later in the frontend component
+finalResults = []  # an array of the final results - 0 for regular sentences, for suspicious sentences - 1, if no relevant claims are found or an array of relevant claims, if there are any
 if sentences != '':
     # parse text into sentences
     for sent in nlpSpacy(sentences).sents:
@@ -140,4 +125,4 @@ st.markdown("---")
 # and lose its current state. In this case, we want to vary the component's
 # "arguments without having it get recreated.
 frontend_component = vue_component(sentences=finalSentences,
-                           labels=finalResults, key="foo")
+                                   labels=finalResults, key="foo")
