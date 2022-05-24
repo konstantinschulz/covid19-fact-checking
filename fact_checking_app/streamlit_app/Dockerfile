@@ -1,0 +1,3 @@
+FROM busybox:latest
+WORKDIR /workspace
+COPY gbert_fang_covid_classifier gbert_fang_covid_classifier

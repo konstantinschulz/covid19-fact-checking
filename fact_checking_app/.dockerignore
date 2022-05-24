@@ -1,1 +1,3 @@
 distilbert-base-uncased/
+streamlit_app/model/
+streamlit_app/gbert_fang_covid_classifier/
