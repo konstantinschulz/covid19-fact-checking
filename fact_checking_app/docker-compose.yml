@@ -6,6 +6,9 @@ services:
     image: konstantinschulz/covid-credibility-classifier:v1
 #    ports:
 #      - "8000:8000"
+  gbert_base:
+    build: ./gbert_base
+    image: konstantinschulz/gbert_base
   gbert_base_fang_covid:
     build: ./streamlit_app
     image: konstantinschulz/gbert_base_fang_covid:latest

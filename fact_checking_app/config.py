@@ -29,7 +29,7 @@ class Config:
     max_length: int = 512
     # model: BertForSequenceClassification = AutoModelForSequenceClassification.from_pretrained(model_dir)
     # tokenizer: DistilBertTokenizer = DistilBertTokenizer.from_pretrained('./distilbert-base-uncased')
-    tokenizer = AutoTokenizer.from_pretrained("deepset/gbert-base")
+    tokenizer = AutoTokenizer.from_pretrained(os.path.join(base_dir, "gbert_base"))
 
 
 Config.model.eval()

@@ -1,4 +1,5 @@
-FROM konstantinschulz/gbert_base_fang_covid:latest as GBERT
+FROM konstantinschulz/gbert_base_fang_covid:latest as GBERT_FANG
+FROM konstantinschulz/gbert_base:latest as GBERT
 FROM python:3.9-slim
 RUN apt-get update
 # avoid https://github.com/debuerreotype/debuerreotype/issues/10
@@ -9,7 +10,8 @@ RUN addgroup --gid 1001 "elg" && adduser --disabled-password --gecos "ELG User,,
 # Everything from here down runs as the unprivileged user account
 USER elg:elg
 WORKDIR /elg
-COPY --from=GBERT /workspace /elg/streamlit_app
+COPY --from=GBERT_FANG /workspace /elg/streamlit_app
+COPY --from=GBERT /workspace /elg/gbert_base
 ENV WORKERS=1
 # Create a Python virtual environment for the dependencies
 RUN python -m venv venv

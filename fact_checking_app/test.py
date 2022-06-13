@@ -31,7 +31,7 @@ class ElgTestCase(unittest.TestCase):
         ports_dict: dict = dict()
         ports_dict[Config.DOCKER_PORT_CREDIBILITY] = Config.HOST_PORT_CREDIBILITY
         container: Container = client.containers.run(
-            Config.DOCKER_IMAGE_CREDIBILITY_SERVICE, ports=ports_dict, detach=True)
+            Config.DOCKER_IMAGE_CREDIBILITY_SERVICE, ports=ports_dict, detach=True, environment=dict(TRANSFORMERS_OFFLINE=1))
         # wait for the container to start the API
         time.sleep(1)
         service: Service = Service.from_local_installation(
@@ -44,7 +44,7 @@ class ElgTestCase(unittest.TestCase):
         self.assertEqual(type(response), ClassificationResponse)
 
     def test_elg_remote(self):
-        service = Service.from_id(7348, auth_file="token.json")
+        service = Service.from_id(7348, auth_file="token.json")  # scope="offline_access", use_cache=False)
         response: Any = service(ElgTestCase.content)
         cr: ClassificationResponse = response
         self.assertEqual(cr.classes[-1].score, ElgTestCase.score)
