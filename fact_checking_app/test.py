@@ -44,7 +44,7 @@ class ElgTestCase(unittest.TestCase):
         self.assertEqual(type(response), ClassificationResponse)
 
     def test_elg_remote(self):
-        service = Service.from_id(7348, auth_file="token.json")  # scope="offline_access", use_cache=False)
+        service: Service = Service.from_id(18690, auth_file="token.json")  # scope="offline_access", use_cache=False
         response: Any = service(ElgTestCase.content)
         cr: ClassificationResponse = response
         self.assertEqual(cr.classes[-1].score, ElgTestCase.score)
